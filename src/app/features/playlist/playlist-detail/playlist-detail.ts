@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlaylistService } from '../../../core/services/playlist.service';
@@ -7,6 +7,7 @@ import { Playlist } from '../../../core/models/playlist.interface';
 import { PlaylistSong } from '../../../core/models/playlist-song.interface';
 import { Song } from '../../../core/models/song.interface';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-playlist-detail',
@@ -14,7 +15,7 @@ import { FormsModule } from '@angular/forms';
     imports: [CommonModule, FormsModule],
     templateUrl: './playlist-detail.html',
 })
-export class PlaylistDetail implements OnInit {
+export class PlaylistDetail implements OnInit, OnDestroy {
     playlistId: string | null = null;
     playlist: Playlist | null = null;
     playlistSongs: PlaylistSong[] = [];
@@ -27,21 +28,53 @@ export class PlaylistDetail implements OnInit {
     currentPlayingUrl: string | null = null;
     audio = new Audio();
 
+    // Subscription management
+    private subscriptions = new Subscription();
+
     constructor(
         private route: ActivatedRoute,
         public router: Router,
         private playlistService: PlaylistService,
         private itunesService: ItunesService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private zone: NgZone
     ) {
         this.audio.onended = () => {
             this.currentPlayingUrl = null;
-            this.cdr.detectChanges(); // Update UI when audio ends
+            this.cdr.markForCheck();
         };
     }
 
-    async ngOnInit() {
+    ngOnInit() {
+        // Subscribe to route changes to handle navigation between playlists
+        const routeSub = this.route.paramMap.subscribe(params => {
+            this.loadData();
+        });
+        this.subscriptions.add(routeSub);
+    }
+
+    ngOnDestroy() {
+        // Clean up all subscriptions
+        this.subscriptions.unsubscribe();
+
+        // Stop any playing audio
+        if (this.audio) {
+            this.audio.pause();
+            this.audio.src = '';
+        }
+    }
+
+    async loadData() {
+        this.loading = true;
+
+        // Reset state for new playlist to avoid showing stale data
+        this.playlist = null;
+        this.playlistSongs = [];
+        this.searchResults = [];
+        this.searchTerm = '';
+
         this.playlistId = this.route.snapshot.paramMap.get('id');
+
         if (this.playlistId) {
             try {
                 await this.loadPlaylist();
@@ -50,11 +83,11 @@ export class PlaylistDetail implements OnInit {
                 console.error('Error during init', error);
             } finally {
                 this.loading = false;
-                this.cdr.detectChanges(); // Ensure loading state update is reflected
+                this.cdr.markForCheck();
             }
         } else {
             this.loading = false;
-            this.cdr.detectChanges();
+            this.cdr.markForCheck();
         }
     }
 
@@ -80,11 +113,14 @@ export class PlaylistDetail implements OnInit {
     search() {
         if (!this.searchTerm.trim()) return;
         this.isSearching = true;
-        this.itunesService.searchSongs(this.searchTerm).subscribe(results => {
+        this.cdr.markForCheck(); // Trigger check for loading state
+
+        const searchSub = this.itunesService.searchSongs(this.searchTerm).subscribe(results => {
             this.searchResults = results;
             this.isSearching = false;
-            this.cdr.detectChanges(); // Force update UI after async search
+            this.cdr.markForCheck(); // Trigger check for results
         });
+        this.subscriptions.add(searchSub);
     }
 
     async addSong(song: Song) {

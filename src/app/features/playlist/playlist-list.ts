@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { PlaylistService } from '../../core/services/playlist.service';
@@ -20,26 +20,48 @@ export class PlaylistList implements OnInit {
   constructor(
     private router: Router,
     private playlistService: PlaylistService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
   ) { }
 
   async ngOnInit() {
-    await this.loadPlaylists();
+    await this.loadInitialData();
   }
 
-  async loadPlaylists() {
+  async loadInitialData() {
     this.loading = true;
 
-    // Get current user to ensure we fetch their playlists
-    const { data: { user } } = await this.authService.getUser();
+    try {
+      // Try to get user from session first
+      const { data: { session } } = await this.authService.getSession();
 
-    const { data, error } = await this.playlistService.getPlaylists(user?.id);
-    this.loading = false;
-
-    if (data) {
-      this.playlists = data;
-    } else if (error) {
-      console.error('Error loading playlists:', error);
+      if (session?.user) {
+        await this.loadPlaylists(session.user.id);
+      } else {
+        console.log('No user session found');
+      }
+    } catch (error) {
+      console.error('Error loading initial data:', error);
+    } finally {
+      this.loading = false;
+      this.cdr.markForCheck();
+    }
+  }
+  async loadPlaylists(userId: string) {
+    try {
+      const { data, error } = await this.playlistService.getPlaylists(userId);
+      if (data) {
+        this.playlists = data;
+      }
+      if (error) {
+        console.error('Error loading playlists:', error);
+      }
+    } catch (e) {
+      console.error('Exception loading playlists', e);
+    } finally {
+      this.loading = false;
+      this.cdr.detectChanges(); // Force UI update
     }
   }
 

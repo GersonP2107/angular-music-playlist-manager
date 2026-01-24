@@ -61,7 +61,7 @@
         <!-- Song List Header -->
         @if (playlistSongs.length > 0) {
         <div
-            class="grid grid-cols-[16px_50px_2fr_1fr_40px] gap-4 px-4 py-2 text-zinc-400 text-xs font-medium uppercase tracking-wide border-b border-zinc-800 mb-2">
+            class="grid grid-cols-[16px_50px_1fr_40px] md:grid-cols-[16px_50px_2fr_1fr_40px] gap-4 px-4 py-2 text-zinc-400 text-xs font-medium uppercase tracking-wide border-b border-zinc-800 mb-2">
             <span>#</span>
             <span></span>
             <span>Título</span>
@@ -86,7 +86,7 @@
 
             @for (song of playlistSongs; track song.id; let i = $index) {
             <div
-                class="grid grid-cols-[16px_50px_2fr_1fr_40px] gap-4 items-center px-4 py-2 rounded hover:bg-white/5 transition-colors group">
+                class="grid grid-cols-[16px_50px_1fr_40px] md:grid-cols-[16px_50px_2fr_1fr_40px] gap-4 items-center px-4 py-2 rounded hover:bg-white/5 transition-colors group">
                 <div class="text-zinc-400 group-hover:hidden text-center">{{ i + 1 }}</div>
                 <button (click)="playPreview(song.preview_url)"
                     class="hidden group-hover:flex items-center justify-center text-white">

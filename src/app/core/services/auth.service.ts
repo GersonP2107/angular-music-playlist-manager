@@ -25,22 +25,37 @@ export class AuthService {
 
     private async initializeAuth() {
         try {
-            const { data: { session } } = await this.supabaseService.client.auth.getSession();
+            console.log('Initializing auth...');
+            const { data: { session }, error } = await this.supabaseService.client.auth.getSession();
+
+            if (error) {
+                console.error('Error getting session:', error);
+            }
+
             if (session?.user) {
+                console.log('Session restored for user:', session.user.email);
                 this._currentUser.next(session.user);
+            } else {
+                console.log('No session found');
+                this._currentUser.next(null);
             }
         } catch (error) {
             console.error('Error initializing auth:', error);
+            this._currentUser.next(null);
         } finally {
             this._initialized.next(true);
+            console.log('Auth initialization complete');
         }
     }
 
     async waitForInitialization(): Promise<void> {
         if (this._initialized.value) {
+            console.log('Auth already initialized');
             return Promise.resolve();
         }
+        console.log('Waiting for auth initialization...');
         await firstValueFrom(this._initialized.pipe(filter(initialized => initialized === true)));
+        console.log('Auth initialization wait complete');
     }
 
     get currentUser$(): Observable<User | null> {

@@ -17,7 +17,7 @@
 
         <!-- Create New Card (Optional visual shortcut) -->
         <div (click)="createNew()"
-            class="bg-gradient-to-br from-[#282828] to-[#181818] p-4 rounded-md hover:bg-[#282828] transition-colors group cursor-pointer h-full flex flex-col items-center justify-center gap-4 border-2 border-dashed border-zinc-700 hover:border-zinc-500 min-h-[260px]">
+            class="bg-gradient-to-br from-[#282828] to-[#181818] p-4 rounded-md hover:bg-[#282828] transition-colors group cursor-pointer h-full flex flex-col items-center justify-center gap-4 border-2 border-dashed border-zinc-700 hover:border-zinc-500 aspect-[0.8] md:aspect-auto">
             <div
                 class="w-16 h-16 rounded-full bg-[#121212] flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                 <svg role="img" height="32" width="32" aria-hidden="true" viewBox="0 0 16 16"
@@ -31,9 +31,10 @@
         </div>
 
         <!-- User Playlists -->
-        @for (playlist of playlists; track playlist.id) {
+        @for (playlist of playlists; track playlist.id; let i = $index) {
         <div (click)="openPlaylist(playlist.id)"
-            class="bg-[#181818] p-4 rounded-md hover:bg-[#282828] transition-colors group cursor-pointer shadow-lg ease-out duration-200">
+            class="bg-[#181818] p-4 rounded-md hover:bg-[#282828] transition-colors group cursor-pointer shadow-lg ease-out duration-200 animate-fade-in"
+            [style.animation-delay]="i * 50 + 'ms'">
             <div class="relative mb-4 shadow-xl rounded-md overflow-hidden bg-[#282828] aspect-square">
                 @if (playlist.image_url) {
                 <img [src]="playlist.image_url" alt="{{playlist.name}}" class="w-full h-full object-cover rounded-md">
