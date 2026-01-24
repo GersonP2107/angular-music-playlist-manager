@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlaylistService } from '../../../core/services/playlist.service';
 import { ItunesService } from '../../../core/services/itunes.service';
@@ -26,7 +26,7 @@ export class PlaylistDetail implements OnInit, OnDestroy {
     searchResults: Song[] = [];
     isSearching = false;
     currentPlayingUrl: string | null = null;
-    audio = new Audio();
+    audio: HTMLAudioElement | null = null;
 
     // Subscription management
     private subscriptions = new Subscription();
@@ -37,12 +37,16 @@ export class PlaylistDetail implements OnInit, OnDestroy {
         private playlistService: PlaylistService,
         private itunesService: ItunesService,
         private cdr: ChangeDetectorRef,
-        private zone: NgZone
+        private zone: NgZone,
+        @Inject(PLATFORM_ID) private platformId: Object
     ) {
-        this.audio.onended = () => {
-            this.currentPlayingUrl = null;
-            this.cdr.markForCheck();
-        };
+        if (isPlatformBrowser(this.platformId)) {
+            this.audio = new Audio();
+            this.audio.onended = () => {
+                this.currentPlayingUrl = null;
+                this.cdr.markForCheck();
+            };
+        }
     }
 
     ngOnInit() {
@@ -214,6 +218,8 @@ export class PlaylistDetail implements OnInit, OnDestroy {
     }
 
     playPreview(url: string) {
+        if (!this.audio) return;
+
         if (this.currentPlayingUrl === url) {
             this.audio.pause();
             this.currentPlayingUrl = null;
