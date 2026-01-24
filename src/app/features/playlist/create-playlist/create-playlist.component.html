@@ -1,6 +1,7 @@
 <div class="min-h-screen bg-[#121212] text-white flex items-center justify-center p-6">
     <div class="w-full max-w-4xl">
-        <h1 class="text-3xl font-bold mb-8 text-white tracking-tight">Crear lista de reproducción</h1>
+        <h1 class="text-3xl font-bold mb-8 text-white tracking-tight">{{ isEditing ? 'Editar' : 'Crear' }} lista de
+            reproducción</h1>
 
         <div class="bg-[#181818] p-8 rounded-lg shadow-2xl flex flex-col md:flex-row gap-8 items-start">
             <!-- Image Upload Section -->
@@ -63,10 +64,5 @@
             </button>
         </div>
 
-        <!-- Disclaimer -->
-        <div class="mt-6 text-xs text-[#b3b3b3] font-normal">
-            Al continuar, aceptas permitir que Angular Music acceda a la imagen que has subido. Asegúrate de que tienes
-            derecho a subir la imagen.
-        </div>
     </div>
 </div>

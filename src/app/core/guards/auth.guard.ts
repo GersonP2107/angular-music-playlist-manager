@@ -1,10 +1,18 @@
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { isPlatformServer } from '@angular/common';
 
 export const authGuard: CanActivateFn = async (route, state) => {
     const authService = inject(AuthService);
     const router = inject(Router);
+    const platformId = inject(PLATFORM_ID);
+
+    // SSR Check: Allow access on server side since localStorage isn't available.
+    // The browser will perform the real check upon hydration.
+    if (isPlatformServer(platformId)) {
+        return true;
+    }
 
     console.log('Auth guard executing for:', state.url);
 

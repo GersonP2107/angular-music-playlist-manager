@@ -123,16 +123,42 @@ export class PlaylistDetail implements OnInit, OnDestroy {
         this.subscriptions.add(searchSub);
     }
 
-    async addSong(song: Song) {
+    // Modal States
+    showAddModal = false;
+    showRemoveModal = false;
+    songToAdd: Song | null = null;
+    songToRemoveId: string | null = null;
+    isProcessing = false;
+
+    // ... existing subscription code ...
+
+    confirmAddSong(song: Song) {
         if (!this.playlistId) return;
 
-        // Check if song already exists in playlist (simple check by trackId)
-        // Note: trackId from iTunes is number, stored as string in DB for flexibility
+        // Check availability locally first
         const exists = this.playlistSongs.some(s => s.track_id === song.trackId.toString());
         if (exists) {
-            alert('Esta canción ya está en tu playlist');
+            // Optional: You could show a specialized modal "Already exists"
+            // For now, let's just use the add modal but maybe with a warning or just proceed to show it
+            // usually you don't even confirm if it exists, you just say it exists.
+            alert('Esta canción ya está en tu playlist'); // Keep simple alert for exists, or upgrade later
             return;
         }
+
+        this.songToAdd = song;
+        this.showAddModal = true;
+    }
+
+    cancelAdd() {
+        this.showAddModal = false;
+        this.songToAdd = null;
+    }
+
+    async executeAddSong() {
+        if (!this.playlistId || !this.songToAdd) return;
+
+        this.isProcessing = true;
+        const song = this.songToAdd;
 
         const songData = {
             playlist_id: this.playlistId,
@@ -145,21 +171,43 @@ export class PlaylistDetail implements OnInit, OnDestroy {
         };
 
         const { data, error } = await this.playlistService.addSongToPlaylist(songData);
+
+        this.isProcessing = false;
+        this.showAddModal = false;
+        this.songToAdd = null;
+
         if (data) {
             this.playlistSongs.unshift(data);
-            // Clear search to show added song
             this.searchResults = [];
             this.searchTerm = '';
+            this.cdr.markForCheck();
         }
         if (error) console.error('Error adding song', error);
     }
 
-    async removeSong(id: string) {
-        if (!confirm('¿Estás seguro de quitar esta canción?')) return;
+    confirmRemoveSong(id: string) {
+        this.songToRemoveId = id;
+        this.showRemoveModal = true;
+    }
 
-        const { error } = await this.playlistService.removeSongFromPlaylist(id);
+    cancelRemove() {
+        this.showRemoveModal = false;
+        this.songToRemoveId = null;
+    }
+
+    async executeRemoveSong() {
+        if (!this.songToRemoveId) return;
+
+        this.isProcessing = true;
+        const { error } = await this.playlistService.removeSongFromPlaylist(this.songToRemoveId);
+
+        this.isProcessing = false;
+        this.showRemoveModal = false;
+
         if (!error) {
-            this.playlistSongs = this.playlistSongs.filter(s => s.id !== id);
+            this.playlistSongs = this.playlistSongs.filter(s => s.id !== this.songToRemoveId);
+            this.songToRemoveId = null;
+            this.cdr.markForCheck();
         } else {
             console.error('Error removing song', error);
         }

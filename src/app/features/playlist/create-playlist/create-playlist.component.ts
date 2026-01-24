@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { PlaylistService } from '../../../core/services/playlist.service';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -12,19 +12,45 @@ import { AuthService } from '../../../core/services/auth.service';
     templateUrl: './create-playlist.component.html',
     styleUrl: './create-playlist.component.css'
 })
-export class CreatePlaylist {
+export class CreatePlaylist implements OnInit {
     playlistName: string = '';
     playlistDescription: string = '';
     imageSrc: string | null = null;
     loading = false;
+    isEditing = false;
+    playlistId: string | null = null;
 
     selectedFile: File | null = null;
 
     constructor(
         private router: Router,
+        private route: ActivatedRoute,
         private playlistService: PlaylistService,
-        private authService: AuthService
+        private authService: AuthService,
+        private cdr: ChangeDetectorRef
     ) { }
+
+    async ngOnInit() {
+        this.playlistId = this.route.snapshot.paramMap.get('id');
+        if (this.playlistId) {
+            this.isEditing = true;
+            this.loading = true;
+            const { data, error } = await this.playlistService.getPlaylist(this.playlistId);
+            if (data) {
+                this.playlistName = data.name;
+                this.playlistDescription = data.description || '';
+                this.imageSrc = data.image_url || null;
+            } else {
+                console.error('Error loading playlist for edit', error);
+                this.router.navigate(['/playlists']);
+            }
+            this.loading = false;
+            // Force change detection safely
+            if (this.cdr) {
+                this.cdr.markForCheck();
+            }
+        }
+    }
 
     onFileSelected(event: any) {
         const file = event.target.files[0];
@@ -65,21 +91,34 @@ export class CreatePlaylist {
             let imageUrl: string | null = null;
             if (this.selectedFile) {
                 imageUrl = await this.uploadImage(user.id);
+            } else if (this.isEditing) {
+                // Keep existing image if no new one selected
+                imageUrl = this.imageSrc;
             }
 
-            const newPlaylist = {
+            const playlistData: any = {
                 name: this.playlistName,
                 description: this.playlistDescription,
-                user_id: user.id,
-                image_url: imageUrl || undefined
             };
 
-            const { error } = await this.playlistService.createPlaylist(newPlaylist);
+            if (imageUrl) {
+                playlistData.image_url = imageUrl;
+            }
+
+            let result;
+            if (this.isEditing && this.playlistId) {
+                result = await this.playlistService.updatePlaylist(this.playlistId, playlistData);
+            } else {
+                playlistData.user_id = user.id;
+                result = await this.playlistService.createPlaylist(playlistData);
+            }
+
+            const { error } = result;
 
             this.loading = false;
             if (error) {
-                console.error('Error creating playlist', error);
-                alert('Error al crear la playlist');
+                console.error('Error saving playlist', error);
+                alert('Error al guardar la playlist');
             } else {
                 this.router.navigate(['/playlists']);
             }
