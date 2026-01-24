@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -39,20 +39,6 @@ export class Login {
         this.errorMessage = error.message;
       } else {
         this.router.navigate(['/']); // Redirect to home/dashboard
-      }
-    }
-  }
-
-  async onSignUp() {
-    if (this.loginForm.valid) {
-      this.loading = true;
-      const { email, password } = this.loginForm.value;
-      const { error } = await this.authService.signUp(email, password);
-      this.loading = false;
-      if (error) {
-        this.errorMessage = error.message;
-      } else {
-        alert('Registro exitoso! Por favor verifica tu email.');
       }
     }
   }

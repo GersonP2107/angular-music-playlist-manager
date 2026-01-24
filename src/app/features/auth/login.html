@@ -1,40 +1,48 @@
-<div class="login-container">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-        <h2>Bienvenido</h2>
+<div class="auth-container">
+    <div class="auth-card fade-in-up">
+        <div class="auth-header">
+            <h2>Bienvenido</h2>
+            <p>Continúa tu experiencia musical</p>
+        </div>
 
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" formControlName="email" placeholder="tu@email.com">
-            @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-            <div class="error">
-                Email válido es requerido
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" formControlName="email" placeholder="tu@email.com">
+                </div>
+                @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+                <div class="error-text">
+                    Email válido es requerido
+                </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" formControlName="password" placeholder="••••••••">
+                </div>
+                @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+                <div class="error-text">
+                    Contraseña es requerida
+                </div>
+                }
+            </div>
+
+            @if (errorMessage) {
+            <div class="message error fade-in">
+                {{ errorMessage }}
             </div>
             }
-        </div>
 
-        <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" formControlName="password" placeholder="******">
-            @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-            <div class="error">
-                Contraseña (min 6 caracteres) es requerida
+            <button type="submit" [disabled]="loginForm.invalid || loading" class="primary-btn">
+                {{ loading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+            </button>
+
+            <div class="auth-footer">
+                <p>¿No tienes cuenta? <a routerLink="/register">Regístrate</a></p>
             </div>
-            }
-        </div>
-
-        @if (errorMessage) {
-        <div class="error-message">
-            {{ errorMessage }}
-        </div>
-        }
-
-        <div class="button-group">
-            <button type="submit" [disabled]="loginForm.invalid || loading">
-                {{ loading ? 'Cargando...' : 'Iniciar Sesión' }}
-            </button>
-            <button type="button" (click)="onSignUp()" [disabled]="loginForm.invalid || loading" class="secondary">
-                Registrarse
-            </button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>

@@ -6,7 +6,7 @@
         <!-- Placeholder for Album Art -->
         <div
             class="relative h-14 w-14 bg-zinc-800 rounded shadow-lg mr-4 flex-shrink-0 overflow-hidden group cursor-pointer">
-            <img src="https://i.scdn.co/image/ab67616d0000b273e8b066f70c206551210d9063" alt="Cover"
+            <img src="/images/album-placeholder.png" alt="Cover"
                 class="object-cover w-full h-full opacity-80 group-hover:opacity-100 transition-opacity">
         </div>
         <div class="flex flex-col overflow-hidden mr-4">
@@ -16,20 +16,21 @@
                 Ejemplo</span>
         </div>
         <!-- Like Button -->
-        <button class="text-zinc-400 hover:text-white transition hidden md:block">
-            <svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor">
+        <button class="text-zinc-400 hover:text-white transition hidden md:block" title="Save to your Liked Songs">
+            <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path
-                    d="M1.69 2H1.69C.77 2 0 2.78 0 3.71v6.2c0 .24.04.47.12.69h.01c.21.57.77.98 1.42 1h12.9c.65-.02 1.21-.43 1.42-1h.01c.08-.22.12-.45.12-.69V3.71C16 2.78 15.23 2 14.31 2H14.31c-.93 0-1.7.7-1.79 1.63L12.5 4H3.5l-.02-.37C3.39 2.7 2.62 2 1.69 2zM3.5 5h9l.02.37c.09.93.86 1.63 1.79 1.63h.01c.2 0 .38-.04.54-.12.16-.08.31-.19.42-.33.11-.14.19-.3.23-.48.04-.18.06-.36.06-.55V3.71c0-.49-.4-.89-.9-.89h-.01c-.48.05-.88.46-.88.94L13.5 6H2.5l-.02-2.24c0-.48-.4-.89-.88-.94h-.01c-.5 0-.9.4-.9.89v1.86c0 .19.02.37.06.55.04.18.12.34.23.48.11.14.26.25.42.33.16.08.34.12.54.12h.01c.93 0 1.7-.7 1.79-1.63L3.5 5z">
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
                 </path>
-                <path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"></path>
-                <!-- Actually let's use a nice Heart icon instead of this generic one -->
             </svg>
         </button>
-        <button class="text-zinc-400 hover:text-white transition ml-3 hidden md:block">
-            <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                <path
-                    d="M1.69 2H1.69C.77 2 0 2.78 0 3.71v8.58c0 .93.77 1.71 1.69 1.71H14.31c.93 0 1.7-.78 1.7-1.71V3.71c0-.93-.77-1.71-1.7-1.71H1.69zM1.69 3H14.31c.26 0 .48.22.48.48v8.58c0 .26-.22.48-.48.48H1.69c-.26 0-.48-.22-.48-.48V3.48c0-.26.22-.48.48-.48z">
-                </path>
+        <!-- Picture in Picture -->
+        <button class="text-zinc-400 hover:text-white transition ml-3 hidden md:block" title="Picture in picture">
+            <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <rect x="12" y="11" width="6" height="3" fill="currentColor"></rect>
+                <!-- Small fix: standard icon usually has an arrow or just a box. Using a filled rect for the "mini" screen -->
             </svg>
         </button>
     </div>
@@ -38,51 +39,47 @@
     <div class="flex flex-col items-center max-w-[45%] w-full px-4">
         <div class="flex items-center gap-6 mb-2">
             <!-- Shuffle -->
-            <button class="text-zinc-400 hover:text-white transition">
-                <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path
-                        d="M13.151.922a.75.75 0 1 0-1.06 1.06L13.109 3H11.16a3.75 3.75 0 0 0-2.873 1.34l-6.173 7.356A2.25 2.25 0 0 1 .39 12.5H0V14h.391a3.75 3.75 0 0 0 2.873-1.34l6.173-7.356a2.25 2.25 0 0 1 1.724-.804h1.947l-1.017 1.018a.75.75 0 0 0 1.06 1.06L15.98 3.75 13.15.922zM.391 3.5H0V2h.391c1.109 0 2.16.49 2.873 1.34L4.89 5.277l-.979 1.167-1.796-2.14A2.25 2.25 0 0 0 .39 3.5z">
-                    </path>
-                    <path
-                        d="m7.5 10.723.98-1.167.957 1.14a2.25 2.25 0 0 0 1.724.804h1.947l-1.017-1.018a.75.75 0 1 1 1.06-1.06l2.829 2.828-2.829 2.828a.75.75 0 1 1-1.06-1.06L13.109 13H11.16a3.75 3.75 0 0 1-2.873-1.34l-.787-.938z">
-                    </path>
+            <button class="text-zinc-400 hover:text-white transition" title="Enable Shuffle">
+                <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 3 21 3 21 8"></polyline>
+                    <line x1="4" y1="20" x2="21" y2="3"></line>
+                    <polyline points="21 16 21 21 16 21"></polyline>
+                    <line x1="15" y1="15" x2="21" y2="21"></line>
+                    <line x1="4" y1="4" x2="9" y2="9"></line>
                 </svg>
             </button>
 
             <!-- Previous -->
-            <button class="text-zinc-400 hover:text-white transition">
-                <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path
-                        d="M3.3 8a.7.7 0 0 1-.7-.7V2.7a.7.7 0 0 1 .7-.7h1.6a.7.7 0 0 1 .7.7v4.6l7.8-4.6a.7.7 0 0 1 1.1.6v10.6a.7.7 0 0 1-1.1.6L5.6 9.4v4.6a.7.7 0 0 1-.7.7H3.3a.7.7 0 0 1-.7-.7V7.3a.7.7 0 0 1 .7.7z">
-                    </path>
+            <button class="text-zinc-400 hover:text-white transition" title="Previous">
+                <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                    <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"></path>
                 </svg>
             </button>
 
             <!-- Play/Pause -->
             <button
-                class="bg-white text-black rounded-full h-8 w-8 flex items-center justify-center hover:scale-105 transition active:scale-95">
-                <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path
-                        d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288V1.713z">
-                    </path>
+                class="bg-white text-black rounded-full h-8 w-8 flex items-center justify-center hover:scale-105 transition active:scale-95 shadow-md">
+                <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"></path>
                 </svg>
             </button>
 
             <!-- Next -->
-            <button class="text-zinc-400 hover:text-white transition">
-                <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path
-                        d="M12.7 8a.7.7 0 0 1 .7.7v4.6a.7.7 0 0 1-.7.7h-1.6a.7.7 0 0 1-.7-.7V8.7L2.6 13.3a.7.7 0 0 1-1.1-.6V2.1a.7.7 0 0 1 1.1-.6l7.8 4.6V2.7a.7.7 0 0 1 .7-.7h1.6a.7.7 0 0 1 .7.7v4.6a.7.7 0 0 1-.7.7z">
-                    </path>
+            <button class="text-zinc-400 hover:text-white transition" title="Next">
+                <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                    <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"></path>
                 </svg>
             </button>
 
             <!-- Repeat -->
-            <button class="text-zinc-400 hover:text-white transition">
-                <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path
-                        d="M0 4.75A3.75 3.75 0 0 1 3.75 1h8.5A3.75 3.75 0 0 1 16 4.75v5a3.75 3.75 0 0 1-3.75 3.75h-3.69l1.22 1.22a.75.75 0 1 1-1.06 1.06l-2.5-2.5a.75.75 0 0 1 0-1.06l2.5-2.5a.75.75 0 1 1 1.06 1.06l-1.22 1.22h3.69a2.25 2.25 0 0 0 2.25-2.25v-5a2.25 2.25 0 0 0-2.25-2.25h-8.5a2.25 2.25 0 0 0-2.25 2.25v5c0 .414.336.75.75.75s.75-.336.75-.75v-5z">
-                    </path>
+            <button class="text-zinc-400 hover:text-white transition" title="Enable Repeat">
+                <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="17 1 21 5 17 9"></polyline>
+                    <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                    <polyline points="7 23 3 19 7 15"></polyline>
+                    <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
                 </svg>
             </button>
         </div>
@@ -97,26 +94,46 @@
 
     <!-- Right: Volume/Options -->
     <div class="flex items-center justify-end w-[30%] gap-3 px-2">
-        <button class="text-zinc-400 hover:text-white transition">
-            <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                <path
-                    d="M15 15H1v-1.5h14V15zm0-4.5H1V9h14v1.5zm-14-7A2.5 2.5 0 0 1 3.5 1h9a2.5 2.5 0 0 1 2.5 2.5v.5h-14v-.5z">
-                </path>
+        <!-- Lyrics / Mic -->
+        <button class="text-zinc-400 hover:text-white transition" title="Lyrics">
+            <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
             </svg>
         </button>
-        <button class="text-zinc-400 hover:text-white transition">
-            <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                <path
-                    d="M9.741.534a.75.75 0 0 1 .735.645l.683 8.033 2.288-.916a.75.75 0 0 1 .56 1.401l-4.14 1.656a.75.75 0 0 1-.958-.399l-3.321-8.303a.75.75 0 1 1 1.39-.556l2.763 6.907-.636-7.48a.75.75 0 0 1 .636-.988zM4 1.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM15 15H1v-1.5h14V15z">
-                </path>
+
+        <!-- Queue -->
+        <button class="text-zinc-400 hover:text-white transition" title="Queue">
+            <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
             </svg>
         </button>
+
+        <!-- Devices -->
+        <button class="text-zinc-400 hover:text-white transition" title="Connect to a device">
+            <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+        </button>
+
         <div class="flex items-center gap-2 w-32 group">
-            <button class="text-zinc-400 hover:text-white transition">
-                <svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path
-                        d="M12.945.375a.75.75 0 1 0-.96 1.15 9.75 9.75 0 0 1 0 13.888.75.75 0 1 0 .96 1.15 11.25 11.25 0 0 0 0-16.188zM10.29 4.045a.75.75 0 1 0-.95 1.16 5.25 5.25 0 0 1 0 7.434.75.75 0 1 0 .95 1.16 6.75 6.75 0 0 0 0-9.754zM2.25 6a.75.75 0 0 0-.75.75v4.5c0 .414.336.75.75.75h2.09l4.544 4.545a.75.75 0 0 0 1.28-.53V2.005a.75.75 0 0 0-1.28-.53L4.34 6.02H2.25z">
-                    </path>
+            <button class="text-zinc-400 hover:text-white transition" title="Mute">
+                <svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                 </svg>
             </button>
             <input type="range"

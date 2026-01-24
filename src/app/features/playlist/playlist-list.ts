@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { PlaylistService } from '../../core/services/playlist.service';
 import { Playlist } from '../../core/models/playlist.interface';
 
+import { AuthService } from '../../core/services/auth.service';
+
 @Component({
   selector: 'app-playlist-list',
   standalone: true,
@@ -17,7 +19,8 @@ export class PlaylistList implements OnInit {
 
   constructor(
     private router: Router,
-    private playlistService: PlaylistService
+    private playlistService: PlaylistService,
+    private authService: AuthService
   ) { }
 
   async ngOnInit() {
@@ -26,7 +29,11 @@ export class PlaylistList implements OnInit {
 
   async loadPlaylists() {
     this.loading = true;
-    const { data, error } = await this.playlistService.getPlaylists();
+
+    // Get current user to ensure we fetch their playlists
+    const { data: { user } } = await this.authService.getUser();
+
+    const { data, error } = await this.playlistService.getPlaylists(user?.id);
     this.loading = false;
 
     if (data) {

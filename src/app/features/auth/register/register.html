@@ -1,0 +1,61 @@
+<div class="auth-container">
+    <div class="auth-card fade-in-up">
+        <div class="auth-header">
+            <h2>Crear Cuenta</h2>
+            <p>Empieza tu viaje musical</p>
+        </div>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" formControlName="email" placeholder="nombre@ejemplo.com">
+                </div>
+                @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+                <div class="error-text">Email inválido</div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" formControlName="password" placeholder="••••••••">
+                </div>
+                @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+                <div class="error-text">Mínimo 6 caracteres</div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña</label>
+                <div class="input-wrapper">
+                    <input type="password" id="confirmPassword" formControlName="confirmPassword"
+                        placeholder="••••••••">
+                </div>
+                @if (registerForm.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched) {
+                <div class="error-text">Las contraseñas no coinciden</div>
+                }
+            </div>
+
+            @if (errorMessage) {
+            <div class="message error fade-in">
+                {{ errorMessage }}
+            </div>
+            }
+
+            @if (successMessage) {
+            <div class="message success fade-in">
+                {{ successMessage }}
+            </div>
+            }
+
+            <button type="submit" [disabled]="registerForm.invalid || loading" class="primary-btn">
+                {{ loading ? 'Creando cuenta...' : 'Registrarse' }}
+            </button>
+
+            <div class="auth-footer">
+                <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia Sesión</a></p>
+            </div>
+        </form>
+    </div>
+</div>

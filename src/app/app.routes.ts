@@ -9,4 +9,5 @@ export const routes: Routes = [
     { path: 'create-playlist', loadComponent: () => import('./features/playlist/create-playlist/create-playlist.component').then(m => m.CreatePlaylist), canActivate: [authGuard] },
     { path: 'search', loadComponent: () => import('./features/search/search').then(m => m.Search), canActivate: [authGuard] },
     { path: 'login', loadComponent: () => import('./features/auth/login').then(m => m.Login) },
+    { path: 'register', loadComponent: () => import('./features/auth/register/register').then(m => m.Register) },
 ];

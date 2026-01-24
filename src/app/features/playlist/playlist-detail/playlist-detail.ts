@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlaylistService } from '../../../core/services/playlist.service';
@@ -29,33 +29,52 @@ export class PlaylistDetail implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
-        private router: Router,
+        public router: Router,
         private playlistService: PlaylistService,
-        private itunesService: ItunesService
+        private itunesService: ItunesService,
+        private cdr: ChangeDetectorRef
     ) {
-        this.audio.onended = () => this.currentPlayingUrl = null;
+        this.audio.onended = () => {
+            this.currentPlayingUrl = null;
+            this.cdr.detectChanges(); // Update UI when audio ends
+        };
     }
 
     async ngOnInit() {
         this.playlistId = this.route.snapshot.paramMap.get('id');
         if (this.playlistId) {
-            await this.loadPlaylist();
-            await this.loadSongs();
+            try {
+                await this.loadPlaylist();
+                await this.loadSongs();
+            } catch (error) {
+                console.error('Error during init', error);
+            } finally {
+                this.loading = false;
+                this.cdr.detectChanges(); // Ensure loading state update is reflected
+            }
+        } else {
+            this.loading = false;
+            this.cdr.detectChanges();
         }
     }
 
     async loadPlaylist() {
         if (!this.playlistId) return;
         const { data, error } = await this.playlistService.getPlaylist(this.playlistId);
-        if (data) this.playlist = data;
-        if (error) console.error('Error loading playlist', error);
+        if (data) {
+            this.playlist = data;
+        }
+        if (error) {
+            console.error('Error loading playlist', error);
+            // Don't alert immediately, handle in template
+        }
     }
 
     async loadSongs() {
         if (!this.playlistId) return;
         const { data, error } = await this.playlistService.getPlaylistSongs(this.playlistId);
         if (data) this.playlistSongs = data;
-        this.loading = false;
+        if (error) console.error('Error loading songs', error);
     }
 
     search() {
@@ -64,6 +83,7 @@ export class PlaylistDetail implements OnInit {
         this.itunesService.searchSongs(this.searchTerm).subscribe(results => {
             this.searchResults = results;
             this.isSearching = false;
+            this.cdr.detectChanges(); // Force update UI after async search
         });
     }
 

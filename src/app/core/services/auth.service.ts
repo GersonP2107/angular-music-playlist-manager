@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 import { User, Session, AuthError } from '@supabase/supabase-js';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     private _currentUser = new BehaviorSubject<User | null>(null);
+    private _initialized = new BehaviorSubject<boolean>(false);
 
     constructor(private supabaseService: SupabaseService) {
-        this.loadUser();
+        this.initializeAuth();
 
         this.supabaseService.client.auth.onAuthStateChange((event, session) => {
             if (session) {
@@ -19,6 +21,26 @@ export class AuthService {
                 this._currentUser.next(null);
             }
         });
+    }
+
+    private async initializeAuth() {
+        try {
+            const { data: { session } } = await this.supabaseService.client.auth.getSession();
+            if (session?.user) {
+                this._currentUser.next(session.user);
+            }
+        } catch (error) {
+            console.error('Error initializing auth:', error);
+        } finally {
+            this._initialized.next(true);
+        }
+    }
+
+    async waitForInitialization(): Promise<void> {
+        if (this._initialized.value) {
+            return Promise.resolve();
+        }
+        await firstValueFrom(this._initialized.pipe(filter(initialized => initialized === true)));
     }
 
     get currentUser$(): Observable<User | null> {
@@ -32,6 +54,10 @@ export class AuthService {
 
     async getUser() {
         return this.supabaseService.client.auth.getUser();
+    }
+
+    async getSession() {
+        return this.supabaseService.client.auth.getSession();
     }
 
     async signUp(email: string, password: string): Promise<{ data: { user: User | null; session: Session | null }; error: AuthError | null }> {

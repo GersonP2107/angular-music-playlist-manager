@@ -10,11 +10,17 @@ export class PlaylistService {
 
     constructor(private supabase: SupabaseService) { }
 
-    async getPlaylists(): Promise<PostgrestResponse<Playlist>> {
-        return this.supabase.client
+    async getPlaylists(userId?: string): Promise<PostgrestResponse<Playlist>> {
+        let query = this.supabase.client
             .from('playlists')
             .select('*')
             .order('created_at', { ascending: false });
+
+        if (userId) {
+            query = query.eq('user_id', userId);
+        }
+
+        return query;
     }
 
     async getPlaylist(id: string): Promise<PostgrestSingleResponse<Playlist>> {

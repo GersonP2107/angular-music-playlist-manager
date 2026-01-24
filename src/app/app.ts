@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 export class App implements OnInit {
   protected readonly title = signal('prueba-tecnica-lista-reproduccion');
   showFooter = true;
+  showHeader = true;
 
   constructor(private router: Router) { }
 
@@ -22,7 +23,9 @@ export class App implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      this.showFooter = !event.url.includes('/login');
+      const isAuthPage = event.url.includes('/login') || event.url.includes('/register');
+      this.showFooter = !isAuthPage;
+      this.showHeader = !isAuthPage;
     });
   }
 }
