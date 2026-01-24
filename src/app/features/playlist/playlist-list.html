@@ -1,1 +1,66 @@
-<p>playlist-list works!</p>
+<div class="bg-[#121212] min-h-screen p-6 text-white pb-24">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold tracking-tight">Mis Playlists</h1>
+        <button (click)="createNew()"
+            class="bg-white text-black text-sm font-bold px-4 py-2 rounded-full hover:scale-105 hover:bg-zinc-200 transition-all flex items-center gap-2">
+            <svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                    d="M15.25 8a.75.75 0 0 1-.5.75H8.75v6a.75.75 0 0 1-1.5 0v-6H1.25a.75.75 0 0 1 0-1.5h6v-6a.75.75 0 0 1 1.5 0v6h6a.75.75 0 0 1 .5.75z">
+                </path>
+            </svg>
+            Crear nueva
+        </button>
+    </div>
+
+    <!-- Playlist Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+
+        <!-- Create New Card (Optional visual shortcut) -->
+        <div (click)="createNew()"
+            class="bg-gradient-to-br from-[#282828] to-[#181818] p-4 rounded-md hover:bg-[#282828] transition-colors group cursor-pointer h-full flex flex-col items-center justify-center gap-4 border-2 border-dashed border-zinc-700 hover:border-zinc-500 min-h-[260px]">
+            <div
+                class="w-16 h-16 rounded-full bg-[#121212] flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                <svg role="img" height="32" width="32" aria-hidden="true" viewBox="0 0 16 16"
+                    class="fill-zinc-400 group-hover:fill-white transition-colors">
+                    <path
+                        d="M15.25 8a.75.75 0 0 1-.5.75H8.75v6a.75.75 0 0 1-1.5 0v-6H1.25a.75.75 0 0 1 0-1.5h6v-6a.75.75 0 0 1 1.5 0v6h6a.75.75 0 0 1 .5.75z">
+                    </path>
+                </svg>
+            </div>
+            <span class="font-bold text-zinc-400 group-hover:text-white transition-colors">Crear Playlist</span>
+        </div>
+
+        <!-- User Playlists -->
+        @for (playlist of playlists; track playlist.id) {
+        <div (click)="openPlaylist(playlist.id)"
+            class="bg-[#181818] p-4 rounded-md hover:bg-[#282828] transition-colors group cursor-pointer shadow-lg ease-out duration-200">
+            <div class="relative mb-4 shadow-xl rounded-md overflow-hidden bg-[#282828] aspect-square">
+                @if (playlist.image_url) {
+                <img [src]="playlist.image_url" alt="{{playlist.name}}" class="w-full h-full object-cover rounded-md">
+                } @else {
+                <!-- Fallback if no image -->
+                <div class="w-full h-full flex items-center justify-center bg-zinc-800">
+                    <svg role="img" height="48" width="48" aria-hidden="true" viewBox="0 0 24 24" class="fill-zinc-500">
+                        <path
+                            d="M6 3h15v15.167a3.5 3.5 0 1 1-3.5-3.5H19V5H8v13.167a3.5 3.5 0 1 1-3.5-3.5H6V3zm0 13.667H4.5a1.5 1.5 0 1 0 1.5 1.5v-1.5zm13 0h-1.5a1.5 1.5 0 1 0 1.5 1.5v-1.5z">
+                        </path>
+                    </svg>
+                </div>
+                }
+
+                <!-- Play Button Overlay -->
+                <button
+                    class="absolute bottom-2 right-2 w-12 h-12 rounded-full bg-green-500 text-black flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-xl translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 z-10">
+                    <svg role="img" height="24" width="24" aria-hidden="true" viewBox="0 0 24 24" class="fill-current">
+                        <path
+                            d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <h3 class="font-bold text-base mb-1 truncate">{{ playlist.name }}</h3>
+            <p class="text-sm text-[#b3b3b3] line-clamp-1">De Tú</p>
+        </div>
+        }
+    </div>
+</div>

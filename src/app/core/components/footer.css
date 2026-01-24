@@ -1,0 +1,42 @@
+/* Custom Range Slider Styling */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 2px;
+    background-color: #404040;
+    /* zinc-700 */
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    margin-top: -4px;
+    /* Center thumb on track */
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+/* Show thumb on hover of the container (requires group class in HTML) */
+.group:hover input[type="range"]::-webkit-slider-thumb,
+input[type="range"]:active::-webkit-slider-thumb {
+    opacity: 1;
+}
+
+/* Active state for thumb */
+input[type="range"]:active::-webkit-slider-thumb {
+    transform: scale(1.2);
+}
+
+/* Volume slider specific: make it always white-ish accent if supported or handled by track color */
+.volume-slider::-webkit-slider-runnable-track {
+    background-color: #404040;
+}

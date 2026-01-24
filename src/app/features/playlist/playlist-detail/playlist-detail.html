@@ -1,0 +1,124 @@
+@if (playlist) {
+<div class="bg-gradient-to-b from-[#1e1e1e] to-[#121212] min-h-screen text-white pb-24">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row gap-6 p-8 items-end bg-gradient-to-b from-zinc-700/50 to-[#1e1e1e]">
+        <div class="shadow-2xl w-52 h-52 shrink-0">
+            @if (playlist.image_url) {
+            <img [src]="playlist.image_url" class="w-full h-full object-cover shadow-lg">
+            } @else {
+            <div class="w-full h-full bg-zinc-800 flex items-center justify-center">
+                <svg role="img" height="64" width="64" aria-hidden="true" viewBox="0 0 24 24" class="fill-zinc-500">
+                    <path
+                        d="M6 3h15v15.167a3.5 3.5 0 1 1-3.5-3.5H19V5H8v13.167a3.5 3.5 0 1 1-3.5-3.5H6V3zm0 13.667H4.5a1.5 1.5 0 1 0 1.5 1.5v-1.5zm13 0h-1.5a1.5 1.5 0 1 0 1.5 1.5v-1.5z">
+                    </path>
+                </svg>
+            </div>
+            }
+        </div>
+        <div class="flex flex-col gap-2 w-full">
+            <span class="text-xs font-bold uppercase">Playlist Limitada</span>
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter">{{ playlist.name }}</h1>
+            <p class="text-zinc-300 text-sm mt-4">{{ playlist.description || 'Sin descripción' }}</p>
+            <div class="flex items-center gap-2 text-sm mt-2">
+                <span class="font-bold">Tú</span>
+                <span class="text-zinc-400">• {{ playlistSongs.length }} canciones</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="px-8 py-6">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Canciones</h2>
+            @if (playlistSongs.length === 0) {
+            <div class="text-zinc-400 italic">
+                Aún no hay canciones en esta playlist. ¡Agrega algunas abajo!
+            </div>
+            }
+
+            <!-- Song List -->
+            <div class="flex flex-col">
+                @for (song of playlistSongs; track song.id; let i = $index) {
+                <div class="group flex items-center gap-4 p-2 hover:bg-white/10 rounded-md transition-colors">
+                    <div class="w-8 text-center text-zinc-400 group-hover:hidden">{{ i + 1 }}</div>
+                    <button (click)="playPreview(song.preview_url)"
+                        class="w-8 hidden group-hover:flex items-center justify-center text-white">
+                        @if (currentPlayingUrl !== song.preview_url) {
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd"
+                                d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 text-green-500">
+                            <path fill-rule="evenodd"
+                                d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        }
+                    </button>
+
+                    <img [src]="song.artwork_url" class="w-10 h-10 rounded shadow-md">
+
+                    <div class="flex flex-col flex-1 min-w-0">
+                        <span class="font-medium text-white truncate"
+                            [class.text-green-500]="currentPlayingUrl === song.preview_url">{{ song.track_name }}</span>
+                        <span class="text-sm text-zinc-400 truncate">{{ song.artist_name }}</span>
+                    </div>
+
+                    <div class="hidden md:block flex-1 text-zinc-400 text-sm truncate">
+                        {{ song.collection_name }}
+                    </div>
+
+                    <button (click)="removeSong(song.id)"
+                        class="text-zinc-400 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity p-2"
+                        title="Quitar de la playlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                        </svg>
+                    </button>
+                </div>
+                }
+            </div>
+        </div>
+
+        <hr class="border-zinc-800 my-8">
+
+        <!-- Add Songs Section -->
+        <div>
+            <h2 class="text-xl font-bold mb-4">Encontremos algo para tu playlist</h2>
+            <div class="relative max-w-md">
+                <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="search()" placeholder="Buscar canciones"
+                    class="w-full bg-[#2a2a2a] text-sm text-white p-3 pl-10 rounded-md focus:outline-none focus:ring-2 focus:ring-white/20 placeholder-zinc-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </div>
+
+            <!-- Search Results Mini -->
+            @if (searchResults.length > 0) {
+            <div class="mt-4 flex flex-col gap-2">
+                @for (song of searchResults.slice(0, 5); track $index) {
+                <div class="flex items-center gap-3 p-2 hover:bg-white/5 rounded-md group">
+                    <img [src]="song.artworkUrl100" class="w-10 h-10 rounded">
+                    <div class="flex flex-col flex-1 min-w-0">
+                        <span class="font-medium text-sm truncate">{{ song.trackName }}</span>
+                        <span class="text-xs text-zinc-400 truncate">{{ song.artistName }}</span>
+                    </div>
+                    <button (click)="addSong(song)"
+                        class="px-3 py-1 bg-transparent border border-zinc-500 rounded-full text-xs font-bold hover:border-white hover:scale-105 transition-all">
+                        Agregar
+                    </button>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</div>
+}
