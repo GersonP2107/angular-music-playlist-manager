@@ -11,4 +11,10 @@ export const routes: Routes = [
     { path: 'search', loadComponent: () => import('./features/search/search').then(m => m.Search), canActivate: [authGuard] },
     { path: 'login', loadComponent: () => import('./features/auth/login').then(m => m.Login) },
     { path: 'register', loadComponent: () => import('./features/auth/register/register').then(m => m.Register) },
+    {
+        path: 'liked-songs',
+        loadComponent: () => import('./features/playlist/playlist-detail/playlist-detail').then(m => m.PlaylistDetail),
+        canActivate: [authGuard],
+        data: { isLiked: true }
+    },
 ];

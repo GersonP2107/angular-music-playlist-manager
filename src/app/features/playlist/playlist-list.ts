@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { PlaylistService } from '../../core/services/playlist.service';
 import { Playlist } from '../../core/models/playlist.interface';
@@ -9,7 +8,7 @@ import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-playlist-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './playlist-list.html',
   styleUrl: './playlist-list.css',
 })

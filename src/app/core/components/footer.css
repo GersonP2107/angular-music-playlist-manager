@@ -9,8 +9,7 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-runnable-track {
     height: 4px;
     border-radius: 2px;
-    background-color: #404040;
-    /* zinc-700 */
+    /* Background handled by inline style for progress */
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -38,5 +37,5 @@ input[type="range"]:active::-webkit-slider-thumb {
 
 /* Volume slider specific: make it always white-ish accent if supported or handled by track color */
 .volume-slider::-webkit-slider-runnable-track {
-    background-color: #404040;
+    /* Background handled by inline style */
 }

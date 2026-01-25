@@ -9,26 +9,21 @@ import { MOCK_MUSIC } from '../data/mock-music.data';
     providedIn: 'root'
 })
 export class ItunesService {
-    // private apiUrl = 'https://itunes.apple.com/search'; // Disabled for mock
+    private apiUrl = 'https://itunes.apple.com/search';
 
     constructor(private http: HttpClient) { }
 
     searchSongs(term: string, limit: number = 20): Observable<Song[]> {
-        // Mock implementation
         if (!term.trim()) {
             return of([]);
         }
 
-        const lowerTerm = term.toLowerCase();
+        // Use JSONP if possible or just GET. iTunes API supports CORS usually.
+        // We will try GET first.
+        const url = `${this.apiUrl}?term=${encodeURIComponent(term)}&media=music&limit=${limit}`;
 
-        // Filter mock music
-        const results = MOCK_MUSIC.filter(song =>
-            song.trackName.toLowerCase().includes(lowerTerm) ||
-            song.artistName.toLowerCase().includes(lowerTerm) ||
-            song.collectionName.toLowerCase().includes(lowerTerm)
+        return this.http.get<ItunesSearchResponse>(url).pipe(
+            map(res => res.results || [])
         );
-
-        // Simulate network delay for realism
-        return of(results).pipe(delay(50));
     }
 }

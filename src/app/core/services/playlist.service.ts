@@ -10,6 +10,116 @@ export class PlaylistService {
 
     constructor(private supabase: SupabaseService) { }
 
+    private likedPlaylistId: string | null = null;
+
+    async getLikedSongsPlaylist(): Promise<Playlist | null> {
+        const { data: { user } } = await this.supabase.client.auth.getUser();
+        if (!user) return null;
+
+        if (this.likedPlaylistId) {
+            const { data } = await this.supabase.client
+                .from('playlists')
+                .select('*')
+                .eq('id', this.likedPlaylistId)
+                .single();
+            if (data) return data;
+        }
+
+        // Try to find existing
+        const { data } = await this.supabase.client
+            .from('playlists')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('name', 'Liked Songs')
+            .single();
+
+        if (data) {
+            this.likedPlaylistId = data.id;
+            return data;
+        }
+
+        // Create if not exists
+        const { data: newPlaylist, error } = await this.supabase.client
+            .from('playlists')
+            .insert({
+                user_id: user.id,
+                name: 'Liked Songs',
+                description: 'Tus canciones favoritas',
+            })
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Error creating Liked Songs playlist:', error);
+            return null;
+        }
+
+        if (newPlaylist) this.likedPlaylistId = newPlaylist.id;
+        return newPlaylist;
+    }
+
+    async checkIfLiked(trackId: string): Promise<boolean> {
+        if (!trackId) return false;
+
+        const playlist = await this.getLikedSongsPlaylist();
+        if (!playlist) return false;
+
+        const { data } = await this.supabase.client
+            .from('playlist_songs')
+            .select('id')
+            .eq('playlist_id', playlist.id)
+            .eq('track_id', trackId)
+            .single();
+
+        return !!data;
+    }
+
+    async toggleLike(track: any): Promise<boolean> {
+        const playlist = await this.getLikedSongsPlaylist();
+        if (!playlist) throw new Error('No playlist found. User might not be logged in or creation failed.');
+
+        // Use the explicit trackId if available (robustness), otherwise fallback to id
+        const trackId = track.trackId?.toString() || track.id?.toString();
+        if (!trackId) throw new Error('Invalid track ID');
+
+        // Check if exists
+        const { data: existing } = await this.supabase.client
+            .from('playlist_songs')
+            .select('id')
+            .eq('playlist_id', playlist.id)
+            .eq('track_id', trackId)
+            .single();
+
+        if (existing) {
+            await this.supabase.client
+                .from('playlist_songs')
+                .delete()
+                .eq('id', existing.id);
+            return false; // Unliked
+        } else {
+            // Map standard Track or Song interface to DB schema
+            const { error } = await this.supabase.client
+                .from('playlist_songs')
+                .insert({
+                    playlist_id: playlist.id,
+                    track_id: trackId,
+                    track_name: track.title || track.trackName,
+                    artist_name: track.artist || track.artistName,
+                    collection_name: track.album || track.collectionName || '',
+                    artwork_url: track.artworkUrl || track.artworkUrl100,
+                    preview_url: track.audioUrl || track.previewUrl,
+                    duration_ms: track.durationMs || track.trackTimeMillis || 0
+                });
+
+            if (error) {
+                console.error('Error adding like:', error);
+                throw error;
+            }
+            return true; // Liked
+        }
+    }
+
+
     async getPlaylists(userId?: string): Promise<PostgrestResponse<Playlist>> {
         let query = this.supabase.client
             .from('playlists')
