@@ -7,5 +7,6 @@ export interface PlaylistSong {
     collection_name: string;
     artwork_url: string;
     preview_url: string;
+    duration_ms?: number;
     added_at: string;
 }

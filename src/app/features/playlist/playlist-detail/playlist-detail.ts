@@ -171,7 +171,8 @@ export class PlaylistDetail implements OnInit, OnDestroy {
             artist_name: song.artistName,
             collection_name: song.collectionName,
             artwork_url: song.artworkUrl100,
-            preview_url: song.previewUrl
+            preview_url: song.previewUrl,
+            duration_ms: song.trackTimeMillis
         };
 
         const { data, error } = await this.playlistService.addSongToPlaylist(songData);
@@ -227,7 +228,11 @@ export class PlaylistDetail implements OnInit, OnDestroy {
             this.audio.pause();
             this.currentPlayingUrl = url;
             this.audio.src = url;
-            this.audio.play();
+            this.audio.play().catch(e => {
+                console.error('Error playing preview:', e);
+                this.currentPlayingUrl = null;
+                this.cdr.markForCheck();
+            });
         }
     }
 }

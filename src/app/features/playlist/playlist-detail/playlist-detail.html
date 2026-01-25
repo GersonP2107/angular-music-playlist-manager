@@ -61,11 +61,17 @@
         <!-- Song List Header -->
         @if (playlistSongs.length > 0) {
         <div
-            class="grid grid-cols-[16px_50px_1fr_40px] md:grid-cols-[16px_50px_2fr_1fr_40px] gap-4 px-4 py-2 text-zinc-400 text-xs font-medium uppercase tracking-wide border-b border-zinc-800 mb-2">
+            class="grid grid-cols-[16px_50px_1fr_40px_40px] md:grid-cols-[16px_50px_2fr_1fr_60px_40px] gap-4 px-4 py-2 text-zinc-400 text-xs font-medium uppercase tracking-wide border-b border-zinc-800 mb-2">
             <span>#</span>
             <span></span>
             <span>Título</span>
             <span class="hidden md:block">Álbum</span>
+            <span class="flex justify-end pr-2">
+                <svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"></path>
+                    <path d="M8 3.25a.75.75 0 0 1 .75.75v3.25H11a.75.75 0 0 1 0 1.5H7.25V4A.75.75 0 0 1 8 3.25z"></path>
+                </svg>
+            </span>
             <span></span>
         </div>
         }
@@ -86,7 +92,7 @@
 
             @for (song of playlistSongs; track song.id; let i = $index) {
             <div
-                class="grid grid-cols-[16px_50px_1fr_40px] md:grid-cols-[16px_50px_2fr_1fr_40px] gap-4 items-center px-4 py-2 rounded hover:bg-white/5 transition-colors group">
+                class="grid grid-cols-[16px_50px_1fr_40px_40px] md:grid-cols-[16px_50px_2fr_1fr_60px_40px] gap-4 items-center px-4 py-2 rounded hover:bg-white/5 transition-colors group">
                 <div class="text-zinc-400 group-hover:hidden text-center">{{ i + 1 }}</div>
                 <button (click)="playPreview(song.preview_url)"
                     class="hidden group-hover:flex items-center justify-center text-white">
@@ -119,6 +125,10 @@
                 <div
                     class="hidden md:block text-zinc-400 text-sm truncate hover:underline hover:text-white cursor-pointer">
                     {{ song.collection_name }}
+                </div>
+
+                <div class="text-zinc-400 text-sm flex justify-end">
+                    {{ song.duration_ms ? (song.duration_ms | date:'mm:ss') : '-:--' }}
                 </div>
 
                 <button (click)="confirmRemoveSong(song.id)"

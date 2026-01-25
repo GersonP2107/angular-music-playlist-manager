@@ -5,6 +5,7 @@ export interface Song {
     collectionName: string;
     artworkUrl100: string;
     previewUrl: string;
+    trackTimeMillis?: number;
     collectionPrice?: number;
 }
 
